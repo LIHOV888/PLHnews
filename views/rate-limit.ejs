@@ -1,0 +1,48 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card border-warning">
+      <div class="card-header bg-warning text-dark">
+        <h3 class="card-title mb-0">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          Too Many Authentication Attempts
+        </h3>
+      </div>
+      <div class="card-body text-center">
+        <div class="mb-4">
+          <i class="fas fa-clock text-warning" style="font-size: 4rem;"></i>
+        </div>
+
+        <h4 class="card-title text-warning mb-3">Please Wait Before Trying Again</h4>
+
+        <p class="card-text lead mb-4">
+          You've exceeded the maximum number of authentication attempts allowed within a short time period.
+          This security measure helps protect your account and our system from unauthorized access.
+        </p>
+
+        <div class="alert alert-info">
+          <h5><i class="fas fa-info-circle me-2"></i>Rate Limit Details</h5>
+          <ul class="list-unstyled mb-0">
+            <li><strong>Time Window:</strong> 15 minutes</li>
+            <li><strong>Max Attempts:</strong> 10 authentication attempts per window</li>
+            <li><strong>Reset Time:</strong> Attempts reset every 15 minutes</li>
+          </ul>
+        </div>
+
+        <div class="mt-4">
+          <p class="text-muted">
+            If you continue to experience issues, please contact our support team or try again later.
+          </p>
+
+          <div class="mt-4">
+            <a href="/" class="btn btn-primary me-2">
+              <i class="fas fa-home me-1"></i>Go to Homepage
+            </a>
+            <a href="/contact" class="btn btn-outline-secondary">
+              <i class="fas fa-envelope me-1"></i>Contact Support
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

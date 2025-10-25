@@ -1,0 +1,119 @@
+<!-- Hero Section -->
+<div class="hero-section mb-5">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="hero-article position-relative">
+          <% if (article.video) { %>
+            <video class="hero-video" controls>
+              <source src="<%= article.video %>" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          <% } else { %>
+            <img src="<%= article.image %>" alt="<%= article.title %>" class="hero-image">
+          <% } %>
+          <div class="hero-overlay">
+            <div class="hero-content">
+              <span class="hero-category">Breaking News</span>
+              <h1 class="hero-title"><%= article.title %></h1>
+              <p class="hero-summary"><%= article.summary %></p>
+              <small class="text-white"><%= new Date(article.date).toDateString() %></small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8">
+      <!-- Article Content -->
+      <article class="mb-5">
+        <div class="article-content">
+          <p><%= article.content %></p>
+        </div>
+        <div class="article-meta mt-4 pt-4 border-top">
+          <small class="text-muted">Published on <%= new Date(article.date).toDateString() %> | <%= article.views %> views</small>
+        </div>
+      </article>
+
+      <script>
+        // Set article ID for JavaScript use
+        window.articleId = '<%= article._id %>';
+        // Set current user info for JavaScript use
+        window.currentUser = JSON.parse('<%- JSON.stringify(userJson) %>');
+      </script>
+
+
+
+      <!-- Comments Section -->
+      <section class="comments-section">
+        <h3>Comments</h3>
+
+        <!-- Comment Form -->
+        <% if (user) { %>
+          <div class="comment-form mb-4">
+            <form id="comment-form">
+              <div class="mb-3">
+                <textarea class="form-control" id="comment-content" rows="3" placeholder="Write a comment..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Post Comment</button>
+            </form>
+          </div>
+        <% } else { %>
+          <div class="alert alert-info">
+            <a href="/login">Login</a> to post comments.
+          </div>
+        <% } %>
+
+        <!-- Comments List -->
+        <div id="comments-list">
+          <!-- Comments will be loaded here -->
+        </div>
+      </section>
+
+      <!-- Back to Home -->
+      <div class="text-center mb-5">
+        <a href="/" class="btn btn-outline-primary">← Back to Home</a>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <!-- Trending Topics -->
+        <div class="sidebar-widget mb-4">
+          <h3 class="widget-title">Trending Topics</h3>
+          <ul class="trending-list">
+            <li><a href="#">Technology</a></li>
+            <li><a href="#">Sports</a></li>
+            <li><a href="#">Politics</a></li>
+            <li><a href="#">Health</a></li>
+            <li><a href="#">Environment</a></li>
+          </ul>
+        </div>
+
+        <!-- Newsletter Signup -->
+        <div class="sidebar-widget mb-4">
+          <h3 class="widget-title">Stay Updated</h3>
+          <p>Subscribe to our newsletter for the latest news.</p>
+          <form class="newsletter-form">
+            <div class="mb-3">
+              <input type="email" class="form-control" placeholder="Enter your email">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Subscribe</button>
+          </form>
+        </div>
+
+        <!-- Ad Space -->
+        <div class="sidebar-widget">
+          <div class="ad-placeholder">
+            <p class="text-center text-muted">Advertisement</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>

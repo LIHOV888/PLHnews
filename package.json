@@ -1,0 +1,55 @@
+{
+  "name": "hnews",
+  "version": "1.0.0",
+  "description": "Full-stack news website for henglihov.online",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "echo 'No build step required for Node.js'"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.1.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "bull": "^4.16.5",
+    "compression": "^1.8.1",
+    "connect-mongo": "^5.1.0",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-fileupload": "^1.5.2",
+    "express-rate-limit": "^7.4.1",
+    "express-session": "^1.18.2",
+    "express-validator": "^7.3.0",
+    "helmet": "^8.0.0",
+    "i18next": "^25.6.0",
+    "i18next-fs-backend": "^2.6.0",
+    "i18next-http-middleware": "^3.8.1",
+    "jest": "^30.2.0",
+    "mongodb": "^6.20.0",
+    "mongodb-memory-server": "^10.2.3",
+    "mongoose": "^8.19.2",
+    "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
+    "redis": "^5.9.0",
+    "rss": "^1.2.2",
+    "sharp": "^0.34.4",
+    "socket.io": "^4.8.1",
+    "supertest": "^7.1.4",
+    "tinymce": "^8.2.0",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "news",
+    "website",
+    "henglihov.online"
+  ],
+  "author": "PLH",
+  "license": "ISC"
+}

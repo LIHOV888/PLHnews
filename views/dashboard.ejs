@@ -1,0 +1,73 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card mb-4">
+      <div class="card-header">
+        <h3>Dashboard</h3>
+      </div>
+      <div class="card-body">
+        <h4>Welcome, <%= user.username %>!</h4>
+        <p>You are successfully logged in.</p>
+      </div>
+    </div>
+
+    <!-- User Profile Information -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>Profile Information</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Username:</strong> <%= user.username %></p>
+            <p><strong>Email:</strong> <%= user.email %></p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Role:</strong> <%= user.role || 'user' %></p>
+            <p><strong>Member Since:</strong> <%= new Date(user.createdAt || Date.now()).toLocaleDateString() %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Password Form -->
+    <div class="card">
+      <div class="card-header">
+        <h4>Change Password</h4>
+      </div>
+      <div class="card-body">
+        <% if (typeof message !== 'undefined' && message) { %>
+          <div class="alert <%= (typeof success !== 'undefined' && success) ? 'alert-success' : 'alert-danger' %>"><%= message %></div>
+        <% } %>
+        <form action="/auth/change-password" method="POST" novalidate>
+          <div class="mb-3">
+            <label for="currentPassword" class="form-label">Current Password</label>
+            <input type="password" class="form-control" id="currentPassword" name="currentPassword" required minlength="6">
+            <div class="invalid-feedback">
+              Please enter your current password.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="newPassword" class="form-label">New Password</label>
+            <input type="password" class="form-control" id="newPassword" name="newPassword" required minlength="8"
+                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}"
+                   title="Password must contain at least one lowercase letter, one uppercase letter, and one number">
+            <div class="invalid-feedback">
+              Password must be at least 8 characters with uppercase, lowercase, and number.
+            </div>
+            <div class="form-text">
+              Password must contain at least one uppercase letter, one lowercase letter, and one number.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="8">
+            <div class="invalid-feedback">
+              Please confirm your new password.
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Change Password</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

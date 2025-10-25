@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hnews</title>
+  <link rel="icon" href="/images/logo.png" type="image/png">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- AdSense Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9474608612009058" crossorigin="anonymous"></script>
+  <!-- AdSense Meta Tag -->
+  <meta name="google-adsense-account" content="ca-pub-9474608612009058">
+  <!-- Vercel Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <img src="/images/logo.png" alt="Henglihov News Logo" height="40" class="me-2">
+        Hnews
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Categories
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="/category/Politics">Politics</a></li>
+              <li><a class="dropdown-item" href="/category/Business">Business</a></li>
+              <li><a class="dropdown-item" href="/category/Technology">Technology</a></li>
+              <li><a class="dropdown-item" href="/category/Health">Health</a></li>
+              <li><a class="dropdown-item" href="/category/Sports">Sports</a></li>
+              <li><a class="dropdown-item" href="/category/Environment">Environment</a></li>
+              <li><a class="dropdown-item" href="/category/Science">Science</a></li>
+              <li><a class="dropdown-item" href="/category/Entertainment">Entertainment</a></li>
+              <li><a class="dropdown-item" href="/category/Lifestyle">Lifestyle</a></li>
+              <li><a class="dropdown-item" href="/category/Travel">Travel</a></li>
+              <li><a class="dropdown-item" href="/category/Education">Education</a></li>
+              <li><a class="dropdown-item" href="/category/Finance">Finance</a></li>
+              <li><a class="dropdown-item" href="/category/Crime">Crime</a></li>
+              <li><a class="dropdown-item" href="/category/Weather">Weather</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/">All News</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/category/Politics">World</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/category/Politics">U.S.</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/category/Politics">Investigations</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <% if (typeof user !== 'undefined' && user) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/auth/logout">Logout</a>
+            </li>
+          <% } else { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/signup">Sign Up</a>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mt-4">
+    <%- body %>
+  </main>
+
+  <footer class="text-white text-center py-4 mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h5>Hnews</h5>
+          <p>Your trusted source for breaking news and in-depth reporting.</p>
+        </div>
+        <div class="col-md-4">
+          <h5>Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href="/about" class="text-white text-decoration-none">About Us</a></li>
+            <li><a href="/contact" class="text-white text-decoration-none">Contact</a></li>
+            <li><a href="/privacy" class="text-white text-decoration-none">Privacy Policy</a></li>
+            <li><a href="/terms" class="text-white text-decoration-none">Terms of Service</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>Follow Us</h5>
+          <div class="social-links">
+            <a href="https://www.facebook.com" class="text-white text-decoration-none me-3"><i class="fab fa-facebook"></i> Facebook</a>
+            <a href="https://www.twitter.com" class="text-white text-decoration-none me-3"><i class="fab fa-twitter"></i> Twitter</a>
+            <a href="https://www.instagram.com" class="text-white text-decoration-none"><i class="fab fa-instagram"></i> Instagram</a>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4">
+      <p>&copy; 2025 Hnews. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <!-- Custom JS for dropdown hover -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+      const dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+        return new bootstrap.Dropdown(dropdownToggleEl);
+      });
+
+      // Add hover functionality to categories dropdown
+      const categoriesDropdown = document.getElementById('navbarDropdown');
+      const dropdownMenu = categoriesDropdown.nextElementSibling;
+
+      categoriesDropdown.addEventListener('mouseenter', function() {
+        const dropdown = bootstrap.Dropdown.getOrCreateInstance(this);
+        dropdown.show();
+      });
+
+      categoriesDropdown.parentElement.addEventListener('mouseleave', function() {
+        const dropdown = bootstrap.Dropdown.getOrCreateInstance(categoriesDropdown);
+        dropdown.hide();
+      });
+
+      // Socket.io connection
+      const socket = io();
+
+      socket.on('connect', function() {
+        console.log('Connected to server');
+      });
+
+      socket.on('disconnect', function() {
+        console.log('Disconnected from server');
+      });
+
+      // Listen for article updates
+      socket.on('article update', function(data) {
+        console.log('Article update:', data);
+        // Refresh page or update UI as needed
+      });
+
+      // Listen for comment updates
+      socket.on('comment update', function(data) {
+        console.log('Comment update:', data);
+        // Refresh comments or update UI as needed
+      });
+
+        // Comments and ratings functionality for article pages
+      if (document.getElementById('comment-form')) {
+        const commentForm = document.getElementById('comment-form');
+        const commentsList = document.getElementById('comments-list');
+        const articleId = window.articleId || window.location.pathname.split('/').pop();
+
+        // Load comments
+        loadComments();
+
+        // Handle comment form submission
+        commentForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const content = document.getElementById('comment-content').value;
+
+          try {
+            const response = await fetch('/api/comments', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'same-origin',
+              body: JSON.stringify({
+                content: content,
+                articleId: articleId
+              })
+            });
+
+            if (response.ok) {
+              document.getElementById('comment-content').value = '';
+              loadComments();
+              socket.emit('new comment', { articleId: articleId });
+            } else {
+              alert('Failed to post comment');
+            }
+          } catch (error) {
+            console.error('Error posting comment:', error);
+            alert('Error posting comment');
+          }
+        });
+
+        async function loadComments() {
+          try {
+            const response = await fetch(`/api/comments/${articleId}`, {
+              credentials: 'same-origin'
+            });
+            const comments = await response.json();
+
+            // Get current user info from a global variable set by EJS
+            const currentUser = window.currentUser;
+
+            commentsList.innerHTML = comments.map(comment => {
+              const canDelete = currentUser &&
+                               (comment.author._id === currentUser._id ||
+                                currentUser.role === 'admin');
+
+              return `
+                <div class="comment mb-3 p-3 border rounded">
+                  <div class="comment-header d-flex justify-content-between align-items-start">
+                    <strong>${comment.author.username}</strong>
+                    <div class="d-flex align-items-center">
+                      <small class="text-muted me-2">${new Date(comment.createdAt).toLocaleDateString()}</small>
+                      ${canDelete ? `<button class="btn btn-sm btn-outline-danger delete-comment" data-comment-id="${comment._id}">
+                        <i class="fas fa-trash"></i>
+                      </button>` : ''}
+                    </div>
+                  </div>
+                  <div class="comment-content mt-2">
+                    ${comment.content}
+                  </div>
+                </div>
+              `;
+            }).join('');
+
+            // Add event listeners for delete buttons
+            document.querySelectorAll('.delete-comment').forEach(button => {
+              button.addEventListener('click', async function() {
+                const commentId = this.getAttribute('data-comment-id');
+                if (confirm('Are you sure you want to delete this comment?')) {
+                  try {
+                    const response = await fetch(`/api/comments/${commentId}`, {
+                      method: 'DELETE',
+                      credentials: 'same-origin'
+                    });
+
+                    if (response.ok) {
+                      loadComments(); // Reload comments after deletion
+                      socket.emit('comment deleted', { articleId: articleId });
+                    } else {
+                      alert('Failed to delete comment');
+                    }
+                  } catch (error) {
+                    console.error('Error deleting comment:', error);
+                    alert('Error deleting comment');
+                  }
+                }
+              });
+            });
+          } catch (error) {
+            console.error('Error loading comments:', error);
+          }
+        }
+      }
+
+
+    });
+  </script>
+</body>
+</html>

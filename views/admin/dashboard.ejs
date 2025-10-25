@@ -1,0 +1,167 @@
+<div class="dashboard-container">
+  <!-- Stats Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="stats-card">
+        <div class="stats-icon">
+          <i class="fas fa-newspaper text-primary"></i>
+        </div>
+        <div class="stats-content">
+          <h3 class="stats-number"><%= stats.totalArticles %></h3>
+          <p class="stats-label">Total Articles</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="stats-card">
+        <div class="stats-icon">
+          <i class="fas fa-eye text-success"></i>
+        </div>
+        <div class="stats-content">
+          <h3 class="stats-number"><%= stats.publishedArticles %></h3>
+          <p class="stats-label">Published Articles</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="stats-card">
+        <div class="stats-icon">
+          <i class="fas fa-users text-info"></i>
+        </div>
+        <div class="stats-content">
+          <h3 class="stats-number"><%= stats.totalUsers %></h3>
+          <p class="stats-label">Total Users</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="stats-card">
+        <div class="stats-icon">
+          <i class="fas fa-comments text-warning"></i>
+        </div>
+        <div class="stats-content">
+          <h3 class="stats-number"><%= stats.totalComments %></h3>
+          <p class="stats-label">Total Comments</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts and Recent Activity -->
+  <div class="row">
+    <!-- Recent Articles -->
+    <div class="col-md-6">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <h5 class="card-title">
+            <i class="fas fa-clock me-2"></i>
+            Recent Articles
+          </h5>
+          <a href="/admin/articles" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        <div class="card-body">
+          <% if (stats.recentArticles && stats.recentArticles.length > 0) { %>
+            <div class="recent-articles">
+              <% stats.recentArticles.forEach(article => { %>
+                <div class="recent-article-item">
+                  <div class="article-info">
+                    <h6 class="article-title">
+                      <a href="/article/<%= article._id %>"><%= article.title %></a>
+                    </h6>
+                    <small class="text-muted">
+                      By <%= article.author.username %> •
+                      <%= new Date(article.createdAt).toLocaleDateString() %>
+                    </small>
+                  </div>
+                  <div class="article-status">
+                    <% if (article.published) { %>
+                      <span class="badge bg-success">Published</span>
+                    <% } else { %>
+                      <span class="badge bg-warning">Draft</span>
+                    <% } %>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } else { %>
+            <p class="text-muted">No articles found.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Users -->
+    <div class="col-md-6">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <h5 class="card-title">
+            <i class="fas fa-user-plus me-2"></i>
+            Recent Users
+          </h5>
+          <a href="/admin/users" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        <div class="card-body">
+          <% if (stats.recentUsers && stats.recentUsers.length > 0) { %>
+            <div class="recent-users">
+              <% stats.recentUsers.forEach(user => { %>
+                <div class="recent-user-item">
+                  <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div class="user-info">
+                    <h6 class="user-name"><%= user.username %></h6>
+                    <small class="text-muted">
+                      <%= new Date(user.createdAt).toLocaleDateString() %>
+                    </small>
+                  </div>
+                  <div class="user-role">
+                    <span class="badge bg-secondary"><%= user.role %></span>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } else { %>
+            <p class="text-muted">No users found.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <h5 class="card-title">
+            <i class="fas fa-bolt me-2"></i>
+            Quick Actions
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="quick-actions">
+            <a href="/admin/articles/create" class="quick-action-btn">
+              <i class="fas fa-plus-circle"></i>
+              <span>New Article</span>
+            </a>
+            <a href="/admin/users" class="quick-action-btn">
+              <i class="fas fa-users-cog"></i>
+              <span>Manage Users</span>
+            </a>
+            <a href="/admin/comments" class="quick-action-btn">
+              <i class="fas fa-comments"></i>
+              <span>Moderate Comments</span>
+            </a>
+            <a href="/admin/analytics" class="quick-action-btn">
+              <i class="fas fa-chart-line"></i>
+              <span>View Analytics</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
