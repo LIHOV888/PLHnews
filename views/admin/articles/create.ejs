@@ -1,0 +1,197 @@
+<!-- Article Creation Form -->
+<div class="admin-container">
+  <div class="glass-card mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="admin-title">
+        <i class="fas fa-plus-circle text-primary me-2"></i>
+        Create New Article
+      </h1>
+      <a href="/admin/articles" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left me-2"></i>
+        Back to Articles
+      </a>
+    </div>
+
+    <form action="/admin/articles/create" method="POST" class="admin-form" enctype="multipart/form-data">
+      <!-- Title -->
+      <div class="form-group mb-4">
+        <label for="title" class="form-label">Article Title</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="title" 
+          name="title" 
+          required 
+          placeholder="Enter article title"
+        >
+      </div>
+
+      <!-- Summary -->
+      <div class="form-group mb-4">
+        <label for="summary" class="form-label">Summary</label>
+        <textarea 
+          class="form-control" 
+          id="summary" 
+          name="summary" 
+          rows="3" 
+          required 
+          placeholder="Brief description of the article"
+        ></textarea>
+      </div>
+
+      <!-- Category -->
+      <div class="form-group mb-4">
+        <label for="category" class="form-label">Category</label>
+        <select class="form-select" id="category" name="category" required>
+          <option value="">Select a category</option>
+          <option value="Technology">Technology</option>
+          <option value="Science">Science</option>
+          <option value="Health">Health</option>
+          <option value="Politics">Politics</option>
+          <option value="Business">Business</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="Sports">Sports</option>
+          <option value="Environment">Environment</option>
+          <option value="Education">Education</option>
+        </select>
+      </div>
+
+      <!-- Content -->
+      <div class="form-group mb-4">
+        <label for="content" class="form-label">Content</label>
+        <textarea 
+          class="form-control rich-editor" 
+          id="content" 
+          name="content" 
+          rows="10" 
+          required
+        ></textarea>
+      </div>
+
+      <!-- Image Upload -->
+      <div class="form-group mb-4">
+        <label for="image" class="form-label">Featured Image</label>
+        <input 
+          type="file" 
+          class="form-control" 
+          id="image" 
+          name="image" 
+          accept="image/*"
+        >
+        <small class="text-muted">Recommended size: 1200x630 pixels</small>
+      </div>
+
+      <!-- Tags -->
+      <div class="form-group mb-4">
+        <label for="tags" class="form-label">Tags</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="tags" 
+          name="tags" 
+          placeholder="Enter tags separated by commas"
+        >
+      </div>
+
+      <!-- Publishing Options -->
+      <div class="form-group mb-4">
+        <div class="d-flex gap-4">
+          <div class="form-check">
+            <input 
+              class="form-check-input" 
+              type="radio" 
+              name="status" 
+              id="publishNow" 
+              value="published" 
+              checked
+            >
+            <label class="form-check-label" for="publishNow">
+              Publish Now
+            </label>
+          </div>
+          <div class="form-check">
+            <input 
+              class="form-check-input" 
+              type="radio" 
+              name="status" 
+              id="saveDraft" 
+              value="draft"
+            >
+            <label class="form-check-label" for="saveDraft">
+              Save as Draft
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-flex gap-3">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save me-2"></i>
+          Create Article
+        </button>
+        <button type="reset" class="btn btn-secondary">
+          <i class="fas fa-undo me-2"></i>
+          Reset Form
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// Initialize TinyMCE
+tinymce.init({
+  selector: 'textarea.rich-editor',
+  height: 500,
+  menubar: true,
+  plugins: [
+    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+    'insertdatetime', 'media', 'table', 'help', 'wordcount'
+  ],
+  toolbar: 'undo redo | blocks | ' +
+    'bold italic backcolor | alignleft aligncenter ' +
+    'alignright alignjustify | bullist numlist outdent indent | ' +
+    'removeformat | help',
+  content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 16px; line-height: 1.6; }'
+});
+
+// Preview image upload
+document.getElementById('image').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.createElement('img');
+      preview.src = e.target.result;
+      preview.style.maxWidth = '100%';
+      preview.style.marginTop = '10px';
+      preview.className = 'img-thumbnail';
+      
+      const previewContainer = document.getElementById('image').parentElement;
+      const existingPreview = previewContainer.querySelector('img');
+      if (existingPreview) {
+        previewContainer.removeChild(existingPreview);
+      }
+      previewContainer.appendChild(preview);
+    }
+    reader.readAsDataURL(file);
+  }
+});
+
+// Handle form submission
+document.querySelector('form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // Get TinyMCE content
+  const content = tinymce.get('content').getContent();
+  if (!content) {
+    alert('Please enter article content');
+    return;
+  }
+
+  // Submit form
+  this.submit();
+});
+</script>

@@ -1,0 +1,444 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h1 class="admin-title">Analytics Dashboard</h1>
+    <div class="date-range-picker">
+      <select class="form-select" id="timeRange">
+        <option value="7">Last 7 Days</option>
+        <option value="30" selected>Last 30 Days</option>
+        <option value="90">Last 90 Days</option>
+        <option value="365">Last Year</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="analytics-grid">
+    <!-- Overview Cards -->
+    <div class="stats-cards">
+      <div class="stat-card total-views">
+        <div class="stat-icon">
+          <i class="fas fa-eye"></i>
+        </div>
+        <div class="stat-info">
+          <h3><%= (analytics.totalViews && analytics.totalViews[0] && analytics.totalViews[0].total) ? analytics.totalViews[0].total : 0 %></h3>
+          <p>Total Views</p>
+        </div>
+      </div>
+
+      <div class="stat-card top-category">
+        <div class="stat-icon">
+          <i class="fas fa-folder"></i>
+        </div>
+        <div class="stat-info">
+          <h3><%= (analytics.categoryStats && analytics.categoryStats[0] && analytics.categoryStats[0]._id) ? analytics.categoryStats[0]._id : 'N/A' %></h3>
+          <p>Top Category</p>
+        </div>
+      </div>
+
+      <div class="stat-card user-activity">
+        <div class="stat-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-info">
+          <h3><%= (analytics.userActivity && analytics.userActivity[0] && analytics.userActivity[0].count) ? analytics.userActivity[0].count : 0 %></h3>
+          <p>New Users Today</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="analytics-charts">
+      <!-- Views Over Time Chart -->
+      <div class="chart-container">
+        <h2>Views Over Time</h2>
+        <canvas id="viewsChart"></canvas>
+      </div>
+
+      <!-- Category Distribution Chart -->
+      <div class="chart-container">
+        <h2>Category Distribution</h2>
+        <canvas id="categoryChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Top Articles Table -->
+    <div class="top-articles">
+      <h2>Top Performing Articles</h2>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Views</th>
+              <th>Engagement Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (analytics.topArticles && analytics.topArticles.length > 0) { %>
+              <% analytics.topArticles.forEach(function(article) { %>
+                <tr>
+                  <td>
+                    <a href="/article/<%= article._id %>" target="_blank">
+                      <%= article.title %>
+                    </a>
+                  </td>
+                  <td><span class="badge badge-category"><%= article.category %></span></td>
+                  <td><%= article.views || 0 %></td>
+                  <td>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: '<%= ((article.views || 0) / 1000 * 100).toFixed(1) %>%'"></div>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            <% } else { %>
+              <tr>
+                <td colspan="4" class="text-center">No articles available</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Category Stats -->
+    <div class="category-stats">
+      <h2>Category Performance</h2>
+      <div class="category-grid">
+        <% if (analytics.categoryStats && analytics.categoryStats.length > 0) { %>
+          <% analytics.categoryStats.forEach(function(category) { %>
+            <div class="category-card">
+              <h3><%= category._id || 'Uncategorized' %></h3>
+              <div class="category-metrics">
+                <div class="metric">
+                  <span class="metric-value"><%= category.count || 0 %></span>
+                  <span class="metric-label">Articles</span>
+                </div>
+                <div class="metric">
+                  <span class="metric-value"><%= category.totalViews || 0 %></span>
+                  <span class="metric-label">Views</span>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="category-card">
+            <h3>No Categories</h3>
+            <div class="category-metrics">
+              <div class="metric">
+                <span class="metric-value">0</span>
+                <span class="metric-label">Articles</span>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- User Activity Timeline -->
+    <div class="user-timeline">
+      <h2>User Activity Timeline</h2>
+      <div class="timeline-chart">
+        <canvas id="userActivityChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.analytics-grid {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.total-views .stat-icon {
+  background: rgba(66, 153, 225, 0.1);
+  color: var(--admin-primary);
+}
+
+.top-category .stat-icon {
+  background: rgba(72, 187, 120, 0.1);
+  color: var(--admin-success);
+}
+
+.user-activity .stat-icon {
+  background: rgba(237, 137, 54, 0.1);
+  color: #ed8936;
+}
+
+.stat-info h3 {
+  font-size: 1.5rem;
+  margin: 0 0 0.25rem 0;
+  color: var(--admin-dark);
+}
+
+.stat-info p {
+  margin: 0;
+  color: var(--admin-secondary);
+  font-size: 0.875rem;
+}
+
+.analytics-charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+}
+
+.chart-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.chart-container h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  color: var(--admin-dark);
+}
+
+.top-articles {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.top-articles h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  color: var(--admin-dark);
+}
+
+.badge-category {
+  background: #f0f4f8; /* fallback if --admin-light is not defined */
+  color: #4299e1;      /* fallback if --admin-primary is not defined */
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.progress {
+  width: 100%;
+  height: 6px;
+  background: #f0f4f8; /* fallback if --admin-light is not defined */
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #4299e1; /* fallback if --admin-primary is not defined */
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.category-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.category-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: var(--admin-dark);
+}
+
+.category-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.metric {
+  text-align: center;
+}
+
+.metric-value {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--admin-primary);
+}
+
+.metric-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--admin-secondary);
+  margin-top: 0.25rem;
+}
+
+.user-timeline {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.user-timeline h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  color: var(--admin-dark);
+}
+
+@media (max-width: 768px) {
+  .analytics-grid {
+    gap: 1rem;
+  }
+
+  .stats-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-charts {
+    grid-template-columns: 1fr;
+  }
+
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var viewsData = JSON.parse('<%- JSON.stringify(analytics?.userActivity || []) %>');
+  var categoryData = JSON.parse('<%- JSON.stringify(analytics?.categoryStats || []) %>');
+
+  // Views Over Time Chart
+  const viewsCtx = document.getElementById('viewsChart').getContext('2d');
+  new Chart(viewsCtx, {
+    type: 'line',
+    data: {
+      labels: viewsData.map(item => item._id),
+      datasets: [{
+        label: 'Daily Views',
+        data: viewsData.map(item => item.count),
+        borderColor: '#4299e1',
+        backgroundColor: 'rgba(66, 153, 225, 0.1)',
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // Category Distribution Chart
+  const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+  new Chart(categoryCtx, {
+    type: 'doughnut',
+    data: {
+      labels: categoryData.map(cat => cat._id),
+      datasets: [{
+        data: categoryData.map(cat => cat.count),
+        backgroundColor: [
+          '#4299e1',
+          '#48bb78',
+          '#ed8936',
+          '#9f7aea',
+          '#f56565',
+          '#38b2ac'
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right'
+        }
+      }
+    }
+  });
+
+  // User Activity Chart
+  const userActivityCtx = document.getElementById('userActivityChart').getContext('2d');
+  new Chart(userActivityCtx, {
+    type: 'bar',
+    data: {
+      labels: viewsData.map(item => item._id),
+      datasets: [{
+        label: 'New Users',
+        data: viewsData.map(item => item.count),
+        backgroundColor: '#4299e1'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // Time range selector
+  document.getElementById('timeRange').addEventListener('change', function() {
+    // Implement time range filtering
+    // This would typically make an AJAX request to update the data
+  });
+});
+</script>

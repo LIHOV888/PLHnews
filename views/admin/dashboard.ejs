@@ -1,0 +1,265 @@
+<div class="dashboard-container">
+  <!-- Welcome Section -->
+  <div class="welcome-section mb-5">
+    <div class="glass-card welcome-card">
+      <div class="welcome-content">
+        <div class="user-avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="welcome-text">
+          <h1>Welcome back, <%= user.username %>!</h1>
+          <p class="text-muted">Here's what's happening in your news platform today.</p>
+        </div>
+      </div>
+      <div class="current-time">
+        <i class="far fa-clock"></i>
+        <span id="currentTime"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Overview -->
+  <div class="stats-section mb-5">
+    <div class="row g-4">
+      <div class="col-lg-3 col-md-6">
+        <div class="stats-card gradient-purple">
+          <div class="stats-icon">
+            <i class="fas fa-newspaper"></i>
+          </div>
+          <div class="stats-content">
+            <h2 class="stats-number"><%= stats.totalArticles %></h2>
+            <p class="stats-label">Total Articles</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="stats-card gradient-blue">
+          <div class="stats-icon">
+            <i class="fas fa-eye"></i>
+          </div>
+          <div class="stats-content">
+            <h2 class="stats-number"><%= stats.publishedArticles %></h2>
+            <p class="stats-label">Published Articles</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="stats-card gradient-green">
+          <div class="stats-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stats-content">
+            <h2 class="stats-number"><%= stats.totalUsers %></h2>
+            <p class="stats-label">Total Users</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="stats-card gradient-orange">
+          <div class="stats-icon">
+            <i class="fas fa-comments"></i>
+          </div>
+          <div class="stats-content">
+            <h2 class="stats-number"><%= stats.totalComments %></h2>
+            <p class="stats-label">Total Comments</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions-section mb-5">
+    <div class="glass-card">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i class="fas fa-bolt text-primary me-2"></i>
+          Quick Actions
+        </h3>
+        <p class="section-subtitle">Common administrative tasks</p>
+      </div>
+      <div class="quick-actions-grid">
+        <a href="/admin/articles/create" class="quick-action-card gradient-purple">
+          <div class="action-icon">
+            <i class="fas fa-plus-circle"></i>
+          </div>
+          <div class="action-content">
+            <h4>New Article</h4>
+            <p>Create a new article</p>
+          </div>
+        </a>
+        <a href="/admin/users" class="quick-action-card gradient-blue">
+          <div class="action-icon">
+            <i class="fas fa-users-cog"></i>
+          </div>
+          <div class="action-content">
+            <h4>Manage Users</h4>
+            <p>User administration</p>
+          </div>
+        </a>
+        <a href="/admin/comments" class="quick-action-card gradient-green">
+          <div class="action-icon">
+            <i class="fas fa-comments"></i>
+          </div>
+          <div class="action-content">
+            <h4>Moderate Comments</h4>
+            <p>Review and manage comments</p>
+          </div>
+        </a>
+        <a href="/admin/analytics" class="quick-action-card gradient-orange">
+          <div class="action-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="action-content">
+            <h4>View Analytics</h4>
+            <p>Platform insights</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Feed -->
+  <div class="activity-section">
+    <div class="row g-4">
+      <!-- Recent Articles -->
+      <div class="col-lg-6">
+        <div class="glass-card activity-card">
+          <div class="card-header-custom">
+            <div class="card-header-content">
+              <h3 class="card-title">
+                <i class="fas fa-clock text-primary me-2"></i>
+                Recent Articles
+              </h3>
+              <p class="card-subtitle">Latest published content</p>
+            </div>
+            <a href="/admin/articles" class="btn btn-primary btn-sm rounded-pill">
+              View All
+              <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+          <div class="activity-list">
+            <% if (stats.recentArticles && stats.recentArticles.length > 0) { %>
+              <% stats.recentArticles.forEach(article => { %>
+                <div class="activity-item">
+                  <div class="activity-icon">
+                    <i class="fas fa-file-alt"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-main">
+                      <h6 class="activity-title">
+                        <a href="/article/<%= article._id %>"><%= article.title %></a>
+                      </h6>
+                      <div class="activity-meta">
+                        <span class="meta-item">
+                          <i class="fas fa-user-edit me-1"></i>
+                          <%= article.author ? article.author.username : 'Unknown' %>
+                        </span>
+                        <span class="meta-item">
+                          <i class="far fa-calendar-alt me-1"></i>
+                          <%= new Date(article.createdAt).toLocaleDateString() %>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="activity-status">
+                      <% if (article.published) { %>
+                        <span class="status-badge published">Published</span>
+                      <% } else { %>
+                        <span class="status-badge draft">Draft</span>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <i class="fas fa-inbox"></i>
+                </div>
+                <h5>No articles found</h5>
+                <p>Start creating content to see it here</p>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Users -->
+      <div class="col-lg-6">
+        <div class="glass-card activity-card">
+          <div class="card-header-custom">
+            <div class="card-header-content">
+              <h3 class="card-title">
+                <i class="fas fa-user-plus text-primary me-2"></i>
+                Recent Users
+              </h3>
+              <p class="card-subtitle">New platform members</p>
+            </div>
+            <a href="/admin/users" class="btn btn-primary btn-sm rounded-pill">
+              View All
+              <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+          <div class="activity-list">
+            <% if (stats.recentUsers && stats.recentUsers.length > 0) { %>
+              <% stats.recentUsers.forEach(user => { %>
+                <div class="activity-item">
+                  <div class="activity-icon user-avatar">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-main">
+                      <h6 class="activity-title"><%= user.username %></h6>
+                      <div class="activity-meta">
+                        <span class="meta-item">
+                          <i class="far fa-calendar-alt me-1"></i>
+                          <%= new Date(user.createdAt).toLocaleDateString() %>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="activity-status">
+                      <span class="role-badge <%= user.role.toLowerCase() %>">
+                        <%= user.role %>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <h5>No users found</h5>
+                <p>New registrations will appear here</p>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Update current time
+  function updateTime() {
+    const now = new Date();
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    };
+    document.getElementById('currentTime').textContent = now.toLocaleDateString('en-US', options);
+  }
+  
+  updateTime();
+  setInterval(updateTime, 1000);
+</script>

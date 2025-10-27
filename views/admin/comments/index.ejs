@@ -1,0 +1,458 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h1 class="admin-title">Comment Moderation</h1>
+    <div class="comment-stats">
+      <div class="stat-item">
+        <i class="fas fa-comments"></i>
+        <span class="stat-value"><%= comments.length %></span>
+        <span class="stat-label">Comments</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="comment-filters">
+    <form action="/admin/comments" method="GET" class="filter-form">
+      <select name="status" class="form-select">
+        <option value="">All Status</option>
+        <option value="active">Active</option>
+        <option value="deleted">Deleted</option>
+        <option value="reported">Reported</option>
+      </select>
+      <div class="search-box">
+        <input type="text" name="search" placeholder="Search comments..." class="form-control">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="comments-list">
+    <% if (comments.length === 0) { %>
+      <div class="no-comments">
+        <i class="fas fa-comments"></i>
+        <p>No comments found</p>
+      </div>
+    <% } else { %>
+      <% comments.forEach(function(comment) { %>
+        <div class="comment-card" data-id="<%= comment._id %>">
+          <div class="comment-header">
+            <div class="comment-author">
+              <div class="author-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="author-info">
+                <span class="author-name"><%= comment.author.username %></span>
+                <span class="comment-date">
+                  <i class="fas fa-clock"></i>
+                  <%= new Date(comment.createdAt).toLocaleString() %>
+                </span>
+              </div>
+            </div>
+            <div class="comment-article">
+              <i class="fas fa-newspaper"></i>
+              <a href="/article/<%= comment.article._id %>" target="_blank">
+                <%= comment.article.title %>
+              </a>
+            </div>
+          </div>
+
+          <div class="comment-content">
+            <p><%= comment.content %></p>
+          </div>
+
+          <div class="comment-footer">
+            <div class="comment-metrics">
+              <span class="metric">
+                <i class="fas fa-thumbs-up"></i>
+                <%= comment.likes || 0 %>
+              </span>
+              <span class="metric">
+                <i class="fas fa-thumbs-down"></i>
+                <%= comment.dislikes || 0 %>
+              </span>
+              <span class="metric">
+                <i class="fas fa-flag"></i>
+                <%= comment.reports || 0 %>
+              </span>
+            </div>
+
+            <div class="comment-actions">
+              <button class="btn btn-sm btn-warning reply-comment" title="Reply">
+                <i class="fas fa-reply"></i>
+              </button>
+              <button class="btn btn-sm btn-info edit-comment" title="Edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger delete-comment" title="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Reply Form (hidden by default) -->
+          <div class="reply-form hidden">
+            <form class="moderate-form">
+              <textarea class="form-control" placeholder="Write your reply..."></textarea>
+              <div class="form-actions">
+                <button type="button" class="btn btn-secondary cancel-reply">Cancel</button>
+                <button type="submit" class="btn btn-primary submit-reply">Reply</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Edit Form (hidden by default) -->
+          <div class="edit-form hidden">
+            <form class="moderate-form">
+              <textarea class="form-control"></textarea>
+              <div class="form-actions">
+                <button type="button" class="btn btn-secondary cancel-edit">Cancel</button>
+                <button type="submit" class="btn btn-primary submit-edit">Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      <% }); %>
+
+      <!-- Pagination -->
+      <% if (pagination.pages > 1) { %>
+        <div class="pagination-container">
+          <% for(let i = 1; i <= pagination.pages; i++) { %>
+            <a href="/admin/comments?page=<%= i %>" 
+               class="pagination-link <%= pagination.page === i ? 'active' : '' %>">
+              <%= i %>
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+</div>
+
+<style>
+/* Comment Management Specific Styles */
+.comment-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.stat-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--admin-primary);
+}
+
+.stat-label {
+  color: var(--admin-secondary);
+  font-size: 0.9rem;
+}
+
+.comment-filters {
+  margin: 2rem 0;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.comment-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.comment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.comment-author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.author-avatar {
+  width: 40px;
+  height: 40px;
+  background: var(--admin-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--admin-primary);
+}
+
+.author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  font-weight: 600;
+  color: var(--admin-dark);
+}
+
+.comment-date {
+  font-size: 0.875rem;
+  color: var(--admin-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.comment-article {
+  font-size: 0.875rem;
+  color: var(--admin-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.comment-article a {
+  color: var(--admin-primary);
+  text-decoration: none;
+}
+
+.comment-article a:hover {
+  text-decoration: underline;
+}
+
+.comment-content {
+  color: var(--admin-dark);
+  line-height: 1.6;
+  margin: 1rem 0;
+}
+
+.comment-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #edf2f7;
+}
+
+.comment-metrics {
+  display: flex;
+  gap: 1rem;
+}
+
+.metric {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--admin-secondary);
+  font-size: 0.875rem;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.moderate-form {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #edf2f7;
+}
+
+.moderate-form textarea {
+  width: 100%;
+  min-height: 100px;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.no-comments {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 10px;
+  color: var(--admin-secondary);
+}
+
+.no-comments i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .comment-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .comment-article {
+    margin-left: 3.5rem;
+  }
+
+  .comment-footer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .comment-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Delete comment functionality
+  document.querySelectorAll('.delete-comment').forEach(button => {
+    button.addEventListener('click', async function() {
+      if (!confirm('Are you sure you want to delete this comment?')) return;
+
+      const commentCard = this.closest('.comment-card');
+      const commentId = commentCard.dataset.id;
+
+      try {
+        const response = await fetch(`/admin/comments/${commentId}/delete`, {
+          method: 'POST'
+        });
+
+        if (!response.ok) throw new Error('Failed to delete comment');
+
+        commentCard.style.opacity = '0';
+        setTimeout(() => {
+          commentCard.remove();
+          showToast('Comment deleted successfully', 'success');
+        }, 300);
+      } catch (error) {
+        console.error('Error deleting comment:', error);
+        showToast('Failed to delete comment', 'error');
+      }
+    });
+  });
+
+  // Reply functionality
+  document.querySelectorAll('.reply-comment').forEach(button => {
+    button.addEventListener('click', function() {
+      const commentCard = this.closest('.comment-card');
+      const replyForm = commentCard.querySelector('.reply-form');
+      const editForm = commentCard.querySelector('.edit-form');
+      
+      editForm.classList.add('hidden');
+      replyForm.classList.toggle('hidden');
+    });
+  });
+
+  // Cancel reply
+  document.querySelectorAll('.cancel-reply').forEach(button => {
+    button.addEventListener('click', function() {
+      const replyForm = this.closest('.reply-form');
+      replyForm.classList.add('hidden');
+    });
+  });
+
+  // Edit functionality
+  document.querySelectorAll('.edit-comment').forEach(button => {
+    button.addEventListener('click', function() {
+      const commentCard = this.closest('.comment-card');
+      const editForm = commentCard.querySelector('.edit-form');
+      const replyForm = commentCard.querySelector('.reply-form');
+      const content = commentCard.querySelector('.comment-content p').textContent;
+      
+      replyForm.classList.add('hidden');
+      editForm.querySelector('textarea').value = content;
+      editForm.classList.toggle('hidden');
+    });
+  });
+
+  // Cancel edit
+  document.querySelectorAll('.cancel-edit').forEach(button => {
+    button.addEventListener('click', function() {
+      const editForm = this.closest('.edit-form');
+      editForm.classList.add('hidden');
+    });
+  });
+
+  // Submit reply
+  document.querySelectorAll('.moderate-form').forEach(form => {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const commentCard = this.closest('.comment-card');
+      const commentId = commentCard.dataset.id;
+      const textarea = this.querySelector('textarea');
+      const content = textarea.value.trim();
+
+      if (!content) return;
+
+      try {
+        const response = await fetch(`/admin/comments/${commentId}/reply`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ content })
+        });
+
+        if (!response.ok) throw new Error('Failed to submit reply');
+
+        this.closest('.reply-form, .edit-form').classList.add('hidden');
+        textarea.value = '';
+        showToast('Reply submitted successfully', 'success');
+      } catch (error) {
+        console.error('Error submitting reply:', error);
+        showToast('Failed to submit reply', 'error');
+      }
+    });
+  });
+
+  // Toast notification function
+  function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 100);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+});
+</script>

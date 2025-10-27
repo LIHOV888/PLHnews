@@ -1,0 +1,183 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h1 class="admin-title">User Management</h1>
+    <div class="admin-filters">
+      <form action="/admin/users" method="GET" class="filter-form">
+        <select name="role" class="form-select">
+          <option value="">All Roles</option>
+          <option value="user" <%= filters.role === 'user' ? 'selected' : '' %>>User</option>
+          <option value="moderator" <%= filters.role === 'moderator' ? 'selected' : '' %>>Moderator</option>
+          <option value="admin" <%= filters.role === 'admin' ? 'selected' : '' %>>Admin</option>
+        </select>
+        <select name="status" class="form-select">
+          <option value="">All Status</option>
+          <option value="active" <%= filters.status === 'active' ? 'selected' : '' %>>Active</option>
+          <option value="banned" <%= filters.status === 'banned' ? 'selected' : '' %>>Banned</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Filter</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="admin-content">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(function(user) { %>
+            <tr class="user-row <%= user.isBanned ? 'banned' : '' %>">
+              <td><%= user.username %></td>
+              <td><%= user.email %></td>
+              <td>
+                <select class="role-select" data-user-id="<%= user._id %>">
+                  <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>User</option>
+                  <option value="moderator" <%= user.role === 'moderator' ? 'selected' : '' %>>Moderator</option>
+                  <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                </select>
+              </td>
+              <td>
+                <span class="status-badge <%= user.isBanned ? 'banned' : 'active' %>">
+                  <%= user.isBanned ? 'Banned' : 'Active' %>
+                </span>
+              </td>
+              <td><%= new Date(user.createdAt).toLocaleDateString() %></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-sm <%= user.isBanned ? 'btn-success' : 'btn-danger' %> ban-toggle"
+                          data-user-id="<%= user._id %>"
+                          data-is-banned="<%= user.isBanned %>">
+                    <i class="fas <%= user.isBanned ? 'fa-unlock' : 'fa-ban' %>"></i>
+                    <%= user.isBanned ? 'Unban' : 'Ban' %>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if (pagination.pages > 1) { %>
+      <div class="pagination-container">
+        <% for(let i = 1; i <= pagination.pages; i++) { %>
+          <a href="/admin/users?page=<%= i %>&role=<%= filters.role || '' %>&status=<%= filters.status || '' %>"
+             class="pagination-link <%= pagination.page === i ? 'active' : '' %>">
+            <%= i %>
+          </a>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Role update handling
+  document.querySelectorAll('.role-select').forEach(select => {
+    select.addEventListener('change', async function() {
+      const userId = this.dataset.userId;
+      const newRole = this.value;
+      
+      try {
+        const response = await fetch(`/admin/users/${userId}/role`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ role: newRole })
+        });
+        
+        if (!response.ok) throw new Error('Failed to update role');
+        
+        showToast('Role updated successfully', 'success');
+      } catch (error) {
+        console.error('Error updating role:', error);
+        showToast('Failed to update role', 'error');
+        this.value = this.dataset.originalRole;
+      }
+    });
+  });
+
+  // Ban/Unban handling
+  document.querySelectorAll('.ban-toggle').forEach(button => {
+    button.addEventListener('click', async function() {
+      if (!confirm('Are you sure you want to ' + (this.dataset.isBanned === 'true' ? 'unban' : 'ban') + ' this user?')) {
+        return;
+      }
+
+      const userId = this.dataset.userId;
+      const isBanned = this.dataset.isBanned === 'true';
+      
+      // Disable button and show loading state
+      this.disabled = true;
+      const originalText = this.innerHTML;
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+      
+      try {
+        const response = await fetch(`/admin/users/${userId}/ban`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''
+          }
+        });
+        
+        if (!response.ok) throw new Error('Failed to update ban status');
+        
+        const result = await response.json();
+        const row = this.closest('.user-row');
+        const statusBadge = row.querySelector('.status-badge');
+        
+        if (result.banned) {
+          this.innerHTML = '<i class="fas fa-unlock"></i> Unban';
+          this.classList.replace('btn-danger', 'btn-success');
+          statusBadge.textContent = 'Banned';
+          statusBadge.classList.replace('active', 'banned');
+          row.classList.add('banned');
+          row.style.animation = 'highlight 1s ease';
+        } else {
+          this.innerHTML = '<i class="fas fa-ban"></i> Ban';
+          this.classList.replace('btn-success', 'btn-danger');
+          statusBadge.textContent = 'Active';
+          statusBadge.classList.replace('banned', 'active');
+          row.classList.remove('banned');
+          row.style.animation = 'highlight 1s ease';
+        }
+        
+        // Re-enable button
+        this.disabled = false;
+        
+        this.dataset.isBanned = result.banned;
+        showToast(`User ${result.banned ? 'banned' : 'unbanned'} successfully`, 'success');
+      } catch (error) {
+        console.error('Error updating ban status:', error);
+        showToast('Failed to update ban status', 'error');
+      }
+    });
+  });
+
+  function showToast(message, type) {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // Trigger animation and remove
+    setTimeout(() => toast.classList.add('show'), 100);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+});
+</script>
